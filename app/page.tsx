@@ -63,7 +63,7 @@ export default function Home() {
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             {/* Enter a topic, and get a complete social media content plan with posts, hooks, hashtags, and strategies. */}
-            Enter a topic, and get a strategic social media content plan for the week.
+            Enter a topic, and get a strategic social media content plan.
           </p>
         </div>
 
@@ -73,9 +73,9 @@ export default function Home() {
             onGenerate={handleGenerateIdeas} 
             loading={loading}
             suggestedTopics={[
-              "Nigerian fashion Brands",
-              "Real Estate Agents",
-              "Makeup Artists"
+              "7‑day Instagram Reels challenge for fitness coaches",
+              "House for rent hunting tips in Abuja",
+              "Lauching a new collection for a fashion brand"
             ]}
           />
         </div>

@@ -61,7 +61,7 @@ export default function HelpPage() {
             <p className="text-sm text-gray-300 mb-3">
               Each generation uses <span className="font-semibold">1</span>{" "}
               credit. New accounts start with{" "}
-              <span className="font-semibold">10</span> credits.
+              <span className="font-semibold">5</span> credits.
             </p>
             <ul className="text-sm text-gray-300 space-y-1.5 list-disc list-inside">
               <li>Your current credits are shown in the top-right Navbar.</li>
