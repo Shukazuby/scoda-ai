@@ -78,7 +78,7 @@ export default function GraphVisualization({
               )}
               {node.hook && (
                 <div className="text-xs mt-2 pt-2 border-t border-white/10 italic opacity-75 max-w-[280px]">
-                  "{node.hook}"
+                  &quot;{node.hook}&quot;
                 </div>
               )}
               {node.category && (
