@@ -128,7 +128,7 @@ function handleApiError(error: unknown, defaultMessage: string): never {
     // Network errors (backend not reachable)
     if (error.code === "ERR_NETWORK" || error.message === "Network Error") {
       throw new Error(
-        `${defaultMessage}: Cannot connect to backend. Please ensure the backend server is running on ${API_URL}`
+        `${defaultMessage}: Cannot connect to backend. Try again.`
       );
     }
 
@@ -141,7 +141,7 @@ function handleApiError(error: unknown, defaultMessage: string): never {
     // Request was made but no response received
     if (error.request) {
       throw new Error(
-        `${defaultMessage}: No response from server. Check if backend is running on ${API_URL}`
+        `${defaultMessage}: No response from server. Try again.`
       );
     }
 
