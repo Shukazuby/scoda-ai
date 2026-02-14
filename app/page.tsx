@@ -1,20 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import IdeaInput from "@/components/IdeaInput";
 import ContentPlansView from "@/components/ContentPlansView";
-import { generateIdeas, saveIdea } from "@/lib/api";
+import { generateIdeas, saveIdea, UnauthorizedError } from "@/lib/api";
 import type { IdeaGraph } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
+import { X } from "lucide-react";
 
 export default function Home() {
   const [ideas, setIdeas] = useState<IdeaGraph | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [seedsPlanted, setSeedsPlanted] = useState(0);
-  const { user, setUserCredits } = useAuth();
+  const [showUnauthorizedModal, setShowUnauthorizedModal] = useState(false);
+  const { user, setUserCredits, openAccountModal } = useAuth();
+
+  useEffect(() => {
+    if (showUnauthorizedModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [showUnauthorizedModal]);
 
   const handleGenerateIdeas = async (topic: string) => {
     setLoading(true);
@@ -39,6 +52,10 @@ export default function Home() {
         setUserCredits(remainingCredits);
       }
     } catch (err) {
+      if (err instanceof UnauthorizedError) {
+        setShowUnauthorizedModal(true);
+        return;
+      }
       setError(err instanceof Error ? err.message : "Failed to generate ideas");
       console.error("Error generating ideas:", err);
     } finally {
@@ -68,17 +85,73 @@ export default function Home() {
         </div>
 
         {/* Input Section */}
-        <div className="max-w-4xl mx-auto mb-12">
+        <div className="w-full max-w-4xl mx-auto mb-12 px-1 sm:px-0">
           <IdeaInput 
             onGenerate={handleGenerateIdeas} 
             loading={loading}
             suggestedTopics={[
               "7‑day Instagram Reels challenge for fitness coaches",
-              "House for rent hunting tips in Abuja",
+              "House hunting tips for buyers in Abuja",
               "Lauching a new collection for a fashion brand"
             ]}
           />
         </div>
+
+        {/* Unauthorized modal: show when guest clicks Generate */}
+        {showUnauthorizedModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowUnauthorizedModal(false)}
+              aria-hidden
+            />
+            <div
+              className="relative w-full max-w-sm bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-6"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="unauthorized-title"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h2
+                  id="unauthorized-title"
+                  className="text-xl font-bold text-white"
+                >
+                  Unauthorized
+                </h2>
+                <button
+                  onClick={() => setShowUnauthorizedModal(false)}
+                  className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                  aria-label="Close"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <p className="text-gray-300 mb-6">
+                Log in or sign up to generate content.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => {
+                    setShowUnauthorizedModal(false);
+                    openAccountModal("login");
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors"
+                >
+                  Log in
+                </button>
+                <button
+                  onClick={() => {
+                    setShowUnauthorizedModal(false);
+                    openAccountModal("signup");
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors border border-gray-600"
+                >
+                  Sign up
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Error Display */}
         {error && (

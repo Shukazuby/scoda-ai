@@ -10,22 +10,25 @@ interface User {
   avatar?: string;
 }
 
+type ModalView = "profile" | "login" | "signup";
+
 interface AccountModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: User | null;
+  /** When set, open directly to this tab (e.g. after 401). */
+  initialView?: ModalView | null;
   onLogin: (email: string, password: string) => Promise<void>;
   onSignup: (name: string, email: string, password: string) => Promise<void>;
   onLogout: () => void;
   onUpdateProfile: (name: string, email: string) => Promise<void>;
 }
 
-type ModalView = "profile" | "login" | "signup";
-
 export default function AccountModal({
   isOpen,
   onClose,
   user,
+  initialView = null,
   onLogin,
   onSignup,
   onLogout,
@@ -48,11 +51,20 @@ export default function AccountModal({
     if (user) {
       setProfileName(user.name);
       setProfileEmail(user.email);
+    }
+  }, [user]);
+
+  // When modal opens, show requested tab or default (profile for logged-in, login for guest).
+  useEffect(() => {
+    if (!isOpen) return;
+    if (initialView === "login" || initialView === "signup") {
+      setView(initialView);
+    } else if (user) {
       setView("profile");
     } else {
       setView("login");
     }
-  }, [user, isOpen]);
+  }, [isOpen, initialView, user]);
 
   useEffect(() => {
     if (isOpen) {

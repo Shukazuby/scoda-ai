@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import AccountModal from "./AccountModal";
@@ -12,8 +11,17 @@ interface NavbarProps {
 
 export default function Navbar({ credits }: NavbarProps) {
   const pathname = usePathname();
-  const { user, login, signup, logout, updateProfile } = useAuth();
-  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const {
+    user,
+    login,
+    signup,
+    logout,
+    updateProfile,
+    openAccountModal,
+    closeAccountModal,
+    accountModalOpen,
+    accountModalView,
+  } = useAuth();
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -99,7 +107,7 @@ export default function Navbar({ credits }: NavbarProps) {
                 <span className="text-sm font-medium">{credits} Credits</span>
               </div>
               <button
-                onClick={() => setIsAccountModalOpen(true)}
+                onClick={() => openAccountModal()}
                 className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center text-white font-semibold text-sm hover:ring-2 hover:ring-primary-400 transition-all cursor-pointer"
                 aria-label="Account"
               >
@@ -111,8 +119,9 @@ export default function Navbar({ credits }: NavbarProps) {
       </nav>
 
       <AccountModal
-        isOpen={isAccountModalOpen}
-        onClose={() => setIsAccountModalOpen(false)}
+        isOpen={accountModalOpen}
+        onClose={closeAccountModal}
+        initialView={accountModalView}
         user={user}
         onLogin={login}
         onSignup={signup}

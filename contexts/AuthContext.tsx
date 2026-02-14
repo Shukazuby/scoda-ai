@@ -18,6 +18,8 @@ interface User {
   credits?: number;
 }
 
+export type AccountModalView = "login" | "signup" | null;
+
 interface AuthContextType {
   user: User | null;
   token: string | null;
@@ -26,6 +28,12 @@ interface AuthContextType {
   logout: () => void;
   updateProfile: (name: string, email: string) => Promise<void>;
   setUserCredits: (credits: number) => void;
+  /** Open the account modal (e.g. from Navbar or when 401). Pass view to show login/signup tab. */
+  openAccountModal: (view?: AccountModalView) => void;
+  /** Close the account modal. */
+  closeAccountModal: () => void;
+  accountModalOpen: boolean;
+  accountModalView: AccountModalView;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,6 +42,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [initializing, setInitializing] = useState(true);
+  const [accountModalOpen, setAccountModalOpen] = useState(false);
+  const [accountModalView, setAccountModalView] = useState<AccountModalView>(null);
 
   // Load user from localStorage on mount
   useEffect(() => {
@@ -153,6 +163,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const openAccountModal = (view?: AccountModalView) => {
+    setAccountModalView(view ?? null);
+    setAccountModalOpen(true);
+  };
+
+  const closeAccountModal = () => {
+    setAccountModalOpen(false);
+    setAccountModalView(null);
+  };
+
   // While initializing (checking stored token), avoid flashing logged-out state
   if (initializing) {
     return null;
@@ -160,7 +180,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, login, signup, logout, updateProfile, setUserCredits }}
+      value={{
+        user,
+        token,
+        login,
+        signup,
+        logout,
+        updateProfile,
+        setUserCredits,
+        openAccountModal,
+        closeAccountModal,
+        accountModalOpen,
+        accountModalView,
+      }}
     >
       {children}
     </AuthContext.Provider>

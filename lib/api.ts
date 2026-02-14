@@ -98,6 +98,18 @@ export function setAuthToken(token: string | null) {
   authToken = token;
 }
 
+/**
+ * Thrown when the backend returns 401 Unauthorized (e.g. generate without auth).
+ * Use this to show sign-in/sign-up UI instead of a generic error.
+ */
+export class UnauthorizedError extends Error {
+  constructor(message = "Please sign in to continue.") {
+    super(message);
+    this.name = "UnauthorizedError";
+    Object.setPrototypeOf(this, UnauthorizedError.prototype);
+  }
+}
+
 function extractErrorMessage(error: AxiosError<BackendErrorPayload>): string {
   const payload = error.response?.data;
   if (!payload) {
@@ -240,6 +252,16 @@ export async function generateIdeas(topic: string): Promise<{
       remainingCredits: response.data.remainingCredits,
     };
   } catch (error) {
+    if (
+      axios.isAxiosError(error) &&
+      error.response?.status === 401
+    ) {
+      throw new UnauthorizedError(
+        typeof error.response?.data?.message === "string"
+          ? error.response.data.message
+          : "Please sign in to generate content."
+      );
+    }
     handleApiError(error, "Failed to generate ideas");
   }
 }
