@@ -240,7 +240,7 @@ export async function generateIdeas(topic: string): Promise<{
           : "Please sign in to generate content."
       );
     }
-    handleApiError(error, "Failed to generate ideas");
+    handleApiError(error, "Failed");
   }
 }
 

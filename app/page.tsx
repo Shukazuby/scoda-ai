@@ -56,7 +56,7 @@ export default function Home() {
         setShowUnauthorizedModal(true);
         return;
       }
-      setError(err instanceof Error ? err.message : "Failed to generate ideas");
+      setError(err instanceof Error ? err.message : "Failed");
       console.error("Error generating ideas:", err);
     } finally {
       setLoading(false);
@@ -84,8 +84,7 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Input Section */}
-        <div className="w-full max-w-4xl mx-auto mb-12 px-1 sm:px-0">
+        <div className="w-full max-w-4xl mb-12 -mx-3 px-0 sm:mx-auto">
           <IdeaInput 
             onGenerate={handleGenerateIdeas} 
             loading={loading}
