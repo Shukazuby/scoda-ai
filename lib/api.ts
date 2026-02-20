@@ -1,25 +1,12 @@
-/**
- * API client for communicating with the NestJS backend.
- *
- * This module centralizes all HTTP calls so that:
- * - Authentication (JWT) headers are applied consistently
- * - Error handling is normalized
- * - Frontend components stay thin and declarative
- */
 
 import axios, { AxiosError } from "axios";
 import type { IdeaGraph, GenerateIdeasResponse } from "@/types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3003";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-// Log API URL for debugging (only in development)
 if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
-  console.log("🔗 API URL:", API_URL);
 }
 
-/**
- * Shape of backend error responses (see HttpExceptionFilter).
- */
 interface BackendErrorPayload {
   statusCode: number;
   message: string | string[];
@@ -81,7 +68,6 @@ const apiClient = axios.create({
   timeout: 30000, // 30 seconds timeout for AI generation
 });
 
-// Attach Authorization header when a token is available
 apiClient.interceptors.request.use((config) => {
   if (authToken) {
     config.headers = config.headers ?? {};
@@ -90,18 +76,10 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-/**
- * Set or clear the auth token used by the API client.
- * Call this from AuthContext whenever authentication state changes.
- */
 export function setAuthToken(token: string | null) {
   authToken = token;
 }
 
-/**
- * Thrown when the backend returns 401 Unauthorized (e.g. generate without auth).
- * Use this to show sign-in/sign-up UI instead of a generic error.
- */
 export class UnauthorizedError extends Error {
   constructor(message = "Please sign in to continue.") {
     super(message);
@@ -128,7 +106,7 @@ function handleApiError(error: unknown, defaultMessage: string): never {
     // Network errors (backend not reachable)
     if (error.code === "ERR_NETWORK" || error.message === "Network Error") {
       throw new Error(
-        `${defaultMessage}: Cannot connect to backend. Try again.`
+        `${defaultMessage}: Server is not reachable. Try again.`
       );
     }
 
@@ -266,9 +244,6 @@ export async function generateIdeas(topic: string): Promise<{
   }
 }
 
-/**
- * Persist an idea graph to the user's library.
- */
 export async function saveIdea(
   topic: string,
   graph: IdeaGraph
@@ -387,7 +362,7 @@ export async function fetchMostActiveCategories(): Promise<ActiveCategory[]> {
 // ---------- HEALTH ----------
 
 /**
- * Health check endpoint to verify backend connectivity.
+ * Health check endpoint to verify backend connesctivity.
  */
 export async function healthCheck(): Promise<boolean> {
   try {

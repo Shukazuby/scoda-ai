@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import type { IdeaNode } from "@/types";
 
 interface ContentPlanCardProps {
@@ -8,6 +9,18 @@ interface ContentPlanCardProps {
 }
 
 export default function ContentPlanCard({ plan, onRefine }: ContentPlanCardProps) {
+  const [scriptCopied, setScriptCopied] = useState(false);
+
+  const copyScriptToClipboard = useCallback(async () => {
+    if (!plan.script) return;
+    try {
+      await navigator.clipboard.writeText(plan.script);
+      setScriptCopied(true);
+      setTimeout(() => setScriptCopied(false), 2000);
+    } catch {
+      setScriptCopied(false);
+    }
+  }, [plan.script]);
   const getPlatformIcon = (platform?: string) => {
     if (!platform) return "📱";
     const platformLower = platform.toLowerCase();
@@ -89,13 +102,22 @@ export default function ContentPlanCard({ plan, onRefine }: ContentPlanCardProps
 
         {/* Script / Caption */}
         {(plan.script || plan.caption) && (
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="space-y-3 w-full">
             {plan.script && (
-              <div className="rounded-xl bg-gray-50 border border-gray-200 p-3">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-1 flex items-center gap-1">
-                  <span>{isVideoFormat ? "Example video script" : "Script / Outline"}</span>
-                </p>
-                <pre className="text-xs text-gray-800 whitespace-pre-wrap max-h-40 overflow-y-auto leading-relaxed">
+              <div className="rounded-xl bg-gray-50 border border-gray-200 p-3 w-full">
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                    {isVideoFormat ? "Example video script" : "Script / Outline"}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={copyScriptToClipboard}
+                    className="text-primary-600 hover:text-primary-700 text-[10px] font-medium shrink-0 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-1 rounded px-2 py-1"
+                  >
+                    {scriptCopied ? "Copied!" : "Click to copy"}
+                  </button>
+                </div>
+                <pre className="text-xs text-gray-800 whitespace-pre-wrap max-h-40 overflow-y-auto leading-relaxed select-text">
                   {plan.script}
                 </pre>
               </div>
