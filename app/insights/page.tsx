@@ -59,6 +59,7 @@ export default function InsightsPage() {
     mostUsedCategory: "",
     ideasThisWeek: 0,
     creditsUsed: 0,
+    remainingCredits: 0,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -83,6 +84,7 @@ export default function InsightsPage() {
         mostUsedCategory: "",
         ideasThisWeek: 0,
         creditsUsed: 0,
+        remainingCredits: 0,
       });
       setWeeklyActivity([]);
       setCategoryDistribution([]);
@@ -141,10 +143,12 @@ export default function InsightsPage() {
       ? Math.max(...weeklyActivity.map((d) => d.ideas))
       : 1;
 
-  const remainingCredits = Math.max(
-    0,
-    (user?.credits ?? 0) - stats.creditsUsed
-  );
+  const remainingCredits = stats.remainingCredits;
+
+  const mostActiveDay =
+    weeklyActivity.length > 0
+      ? weeklyActivity.reduce((a, b) => (a.ideas >= b.ideas ? a : b), weeklyActivity[0])
+      : null;
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-950 via-purple-950/20 to-gray-950">
@@ -198,9 +202,8 @@ export default function InsightsPage() {
             }
           />
           <StatCard
-            title="Total Nodes Created"
+            title="Content Pieces Created"
             value={loading ? "..." : stats.totalNodes}
-            change="+18%"
             color="blue"
             icon={
               <svg
@@ -219,9 +222,8 @@ export default function InsightsPage() {
             }
           />
           <StatCard
-            title="Avg Nodes per Idea"
-            value={loading ? "..." : stats.avgNodesPerIdea.toFixed(1)}
-            change="+0.3"
+            title="Credits Remaining"
+            value={loading ? "..." : stats.remainingCredits}
             color="green"
             icon={
               <svg
@@ -234,7 +236,7 @@ export default function InsightsPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
             }
@@ -291,7 +293,7 @@ export default function InsightsPage() {
           </div>
 
           {/* Category Distribution */}
-          <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-lg p-6">
+          {/* <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-lg p-6">
             <h2 className="text-xl font-semibold text-white mb-6">
               Category Distribution
             </h2>
@@ -315,10 +317,10 @@ export default function InsightsPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Top Categories */}
-          <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-lg p-6">
+          {/* <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-lg p-6">
             <h2 className="text-xl font-semibold text-white mb-6">
               Most Active Categories
             </h2>
@@ -348,7 +350,7 @@ export default function InsightsPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Usage Summary */}
           <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-lg p-6">
@@ -356,31 +358,51 @@ export default function InsightsPage() {
               Usage Summary
             </h2>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-gray-800/30 rounded-lg">
-                <div>
-                  <p className="text-gray-400 text-sm">Credits Used</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-gray-800/30 rounded-lg">
+                  <p className="text-gray-400 text-sm mb-1">Credits Used</p>
                   <p className="text-white text-2xl font-bold">
-                    {stats.creditsUsed}
+                    {loading ? "—" : stats.creditsUsed}
                   </p>
                 </div>
-                <div className="text-right">
-                  <p className="text-gray-400 text-sm">Credits Remaining</p>
+                <div className="p-4 bg-gray-800/30 rounded-lg">
+                  <p className="text-gray-400 text-sm mb-1">Credits Remaining</p>
                   <p className="text-primary-400 text-2xl font-bold">
-                    {remainingCredits}
+                    {loading ? "—" : remainingCredits}
                   </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-gray-800/30 rounded-lg">
+                  <p className="text-gray-400 text-sm mb-1">Plans in Library</p>
+                  <p className="text-white text-xl font-semibold">
+                    {loading ? "—" : stats.totalIdeas}
+                  </p>
+                  <p className="text-gray-500 text-xs mt-1">Content plans saved</p>
+                </div>
+                <div className="p-4 bg-gray-800/30 rounded-lg">
+                  <p className="text-gray-400 text-sm mb-1">Ideas This Week</p>
+                  <p className="text-white text-xl font-semibold">
+                    {loading ? "—" : stats.ideasThisWeek}
+                  </p>
+                  <p className="text-gray-500 text-xs mt-1">Plans generated in last 7 days</p>
                 </div>
               </div>
               <div className="p-4 bg-gray-800/30 rounded-lg">
                 <p className="text-gray-400 text-sm mb-2">Most Active Day</p>
-                <p className="text-white text-lg font-semibold">Friday</p>
+                <p className="text-white text-lg font-semibold">
+                  {loading ? "—" : mostActiveDay ? mostActiveDay.day : "—"}
+                </p>
                 <p className="text-gray-500 text-xs mt-1">
-                  You generate most ideas on Fridays
+                  {mostActiveDay && mostActiveDay.ideas > 0
+                    ? `You generated ${mostActiveDay.ideas} plan${mostActiveDay.ideas === 1 ? "" : "s"} on ${mostActiveDay.day} this week`
+                    : "Generate a plan to see your busiest day"}
                 </p>
               </div>
               <div className="p-4 bg-gray-800/30 rounded-lg">
                 <p className="text-gray-400 text-sm mb-2">Favorite Category</p>
                 <p className="text-white text-lg font-semibold">
-                  {stats.mostUsedCategory}
+                  {loading ? "—" : stats.mostUsedCategory || "—"}
                 </p>
                 <p className="text-gray-500 text-xs mt-1">
                   Your most explored topic area

@@ -40,6 +40,7 @@ export interface InsightsStats {
   mostUsedCategory: string;
   ideasThisWeek: number;
   creditsUsed: number;
+  remainingCredits: number;
 }
 
 export interface WeeklyActivityPoint {
