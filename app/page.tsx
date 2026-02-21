@@ -84,7 +84,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="w-full max-w-4xl mb-12 -mx-3 px-0 sm:mx-auto">
+        <div className="w-full max-w-4xl mb-12 mx-auto px-0 sm:-mx-3">
           <IdeaInput 
             onGenerate={handleGenerateIdeas} 
             loading={loading}

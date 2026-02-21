@@ -109,9 +109,9 @@ export default function HelpPage() {
               tab summarizes how you’ve been using Scoda.
             </p>
             <ul className="text-sm text-gray-300 space-y-1.5 list-disc list-inside">
-              <li>Total ideas and nodes generated.</li>
+              <li>Total ideas and content generated.</li>
               <li>Ideas created this week and your most active days.</li>
-              <li>Top categories and credits used / remaining.</li>
+              <li>Credits used and remaining.</li>
             </ul>
           </div>
         </section>
