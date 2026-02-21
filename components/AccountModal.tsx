@@ -22,6 +22,7 @@ interface AccountModalProps {
   onSignup: (name: string, email: string, password: string) => Promise<void>;
   onLogout: () => void;
   onUpdateProfile: (name: string, email: string) => Promise<void>;
+  onDeleteAccount: () => Promise<void>;
 }
 
 export default function AccountModal({
@@ -33,10 +34,13 @@ export default function AccountModal({
   onSignup,
   onLogout,
   onUpdateProfile,
+  onDeleteAccount,
 }: AccountModalProps) {
   const [view, setView] = useState<ModalView>("profile");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // Form states
   const [loginEmail, setLoginEmail] = useState("");
@@ -127,6 +131,20 @@ export default function AccountModal({
   const handleLogout = () => {
     onLogout();
     onClose();
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    setError(null);
+    try {
+      await onDeleteAccount();
+      setShowDeleteConfirm(false);
+      onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete account");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -234,6 +252,55 @@ export default function AccountModal({
               >
                 Sign Out
               </button>
+
+              {/* Delete Account Button */}
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(true)}
+                className="w-full px-4 py-2 text-gray-400 hover:text-red-400 hover:bg-red-950/30 border border-gray-700 hover:border-red-500/40 rounded-lg font-medium transition-colors text-sm"
+              >
+                Delete account
+              </button>
+            </div>
+          )}
+
+          {/* Delete account confirmation modal */}
+          {showDeleteConfirm && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-950/90 backdrop-blur-sm rounded-2xl p-4">
+              <div className="w-full max-w-sm rounded-xl bg-gray-900 border border-gray-700 p-5 shadow-xl">
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Are you sure?
+                </h3>
+                <p className="text-sm text-gray-400 mb-4">
+                  This will permanently delete your account and cannot be undone.
+                </p>
+                {error && (
+                  <div className="mb-4 p-2 bg-red-500/10 border border-red-500/50 rounded-lg text-red-300 text-sm">
+                    {error}
+                  </div>
+                )}
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setError(null);
+                    }}
+                    disabled={deleting}
+                    className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDeleteAccount}
+                    disabled={deleting}
+                    className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
+                  >
+                    {deleting ? "Deleting…" : "Delete"}
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 

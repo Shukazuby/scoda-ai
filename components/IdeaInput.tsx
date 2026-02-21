@@ -100,7 +100,7 @@ export default function IdeaInput({
                 key={index}
                 type="button"
                 onClick={() => handleSuggestedTopicClick(suggestedTopic)}
-                className="px-4 py-2 rounded-full text-sm text-gray-300 bg-gray-800/60 hover:bg-gray-700/80 hover:text-white border border-gray-700/60 hover:border-gray-600 transition-colors duration-200 text-left break-words max-w-full focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:ring-offset-2 focus:ring-offset-gray-950"
+                className="px-4 py-2 rounded-full text-sm text-gray-300 bg-gray-800/60 hover:bg-gray-700/80 hover:text-white border border-gray-700/60 hover:border-gray-600 transition-colors duration-200 text-center break-words max-w-full focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:ring-offset-2 focus:ring-offset-gray-950"
               >
                 {suggestedTopic}
               </button>

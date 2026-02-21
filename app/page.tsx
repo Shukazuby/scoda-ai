@@ -84,7 +84,8 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="w-full max-w-4xl mb-12 mx-auto px-0 sm:-mx-3">
+        <div className="w-full mb-12 flex flex-col items-center justify-center -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-hidden">
+          <div className="w-full max-w-4xl mx-auto min-w-0 max-sm:max-w-[min(100%,calc(100vw-2rem))]">
           <IdeaInput 
             onGenerate={handleGenerateIdeas} 
             loading={loading}
@@ -94,6 +95,7 @@ export default function Home() {
               "Lauching a new collection for a fashion brand"
             ]}
           />
+          </div>
         </div>
 
         {/* Unauthorized modal: show when guest clicks Generate */}

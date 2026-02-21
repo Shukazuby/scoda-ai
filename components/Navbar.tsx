@@ -30,6 +30,7 @@ export default function Navbar({ credits }: NavbarProps) {
     closeAccountModal,
     accountModalOpen,
     accountModalView,
+    deleteAccount,
   } = useAuth();
 
   const isActive = (path: string) => {
@@ -191,6 +192,7 @@ export default function Navbar({ credits }: NavbarProps) {
         onSignup={signup}
         onLogout={logout}
         onUpdateProfile={updateProfile}
+        onDeleteAccount={deleteAccount}
       />
     </>
   );

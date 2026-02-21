@@ -7,6 +7,7 @@ import {
   apiGetCurrentUser,
   apiUpdateProfile,
   apiLogout,
+  apiDeleteAccount,
   setAuthToken,
 } from "@/lib/api";
 
@@ -27,6 +28,7 @@ interface AuthContextType {
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   updateProfile: (name: string, email: string) => Promise<void>;
+  deleteAccount: () => Promise<void>;
   setUserCredits: (credits: number) => void;
   /** Open the account modal (e.g. from Navbar or when 401). Pass view to show login/signup tab. */
   openAccountModal: (view?: AccountModalView) => void;
@@ -154,6 +156,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("scoda_user", JSON.stringify(nextUser));
   };
 
+  const deleteAccount = async () => {
+    await apiDeleteAccount();
+    setUser(null);
+    setToken(null);
+    setAuthToken(null);
+    localStorage.removeItem("scoda_user");
+    localStorage.removeItem("scoda_token");
+  };
+
   const setUserCredits = (credits: number) => {
     setUser((prev) => {
       if (!prev) return prev;
@@ -187,6 +198,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signup,
         logout,
         updateProfile,
+        deleteAccount,
         setUserCredits,
         openAccountModal,
         closeAccountModal,

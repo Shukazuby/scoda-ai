@@ -210,6 +210,17 @@ export async function apiLogout(): Promise<void> {
   }
 }
 
+/** Permanently delete the current user account. Clears auth token after success. */
+export async function apiDeleteAccount(): Promise<void> {
+  try {
+    await apiClient.delete("/auth/account");
+  } catch (error) {
+    handleApiError(error, "Failed to delete account");
+  } finally {
+    setAuthToken(null);
+  }
+}
+
 // ---------- IDEAS ----------
 
 /**
