@@ -43,7 +43,7 @@ export default function IdeaInput({
                   if (topic.trim() && !loading) onGenerate(topic.trim()).then(() => setTopic(""));
                 }
               }}
-              placeholder="Enter a topic—e.g. Instagram reels for fitness, launch tips…"
+              placeholder="Enter a topic e.g. Instagram reels for fitness, launch tips…"
               className="flex-1 min-w-0 w-full bg-transparent text-white placeholder-gray-500 outline-none text-[15px] sm:text-base resize-none min-h-[5rem] md:min-h-[6rem] lg:min-h-[3.5rem] max-h-56 py-2 break-words leading-relaxed"
               disabled={loading}
               aria-label="Topic or content idea"
