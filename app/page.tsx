@@ -67,18 +67,18 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-b from-gray-950 via-purple-950/20 to-gray-950">
       <Navbar credits={user?.credits ?? 0} />
 
-      <div className="container mx-auto px-4 py-8 flex flex-col items-center sm:items-stretch">
-        {/* Hero - center on mobile */}
-        <div className="w-full max-w-4xl mx-auto mb-12 mt-8 text-center sm:text-left">
+      <div className="container mx-auto px-4 py-8 flex flex-col items-center">
+        {/* Hero */}
+        <div className="w-full max-w-4xl mx-auto mb-12 mt-8 text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
             Your content planning sanctuary.
           </h1>
-          <p className="text-md text-gray-300 max-w-2xl mx-auto sm:mx-0">
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             Enter a topic, and get a strategic social media content plan.
           </p>
         </div>
 
-        <div className="w-full max-w-4xl mb-12 mx-auto px-0 sm:-mx-3">
+        <div className="w-full max-w-4xl mb-12 mx-auto">
           <IdeaInput
             onGenerate={handleGenerateIdeas}
             loading={loading}
@@ -90,25 +90,25 @@ export default function Home() {
           />
         </div>
 
-        {/* Error - center on mobile */}
+        {/* Error */}
         {error && (
-          <div className="w-full max-w-4xl mx-auto mb-8 flex justify-center sm:justify-start">
-            <div className="w-full bg-red-500/10 border border-red-500/50 rounded-lg p-4 text-red-300 text-center sm:text-left">
+          <div className="w-full max-w-4xl mx-auto mb-8 flex justify-center">
+            <div className="w-full bg-red-500/10 border border-red-500/50 rounded-lg p-4 text-red-300 text-center">
               {error}
             </div>
           </div>
         )}
 
-        {/* Content plans - center on mobile */}
+        {/* Content plans */}
         {ideas && (
-          <div className="w-full max-w-7xl mx-auto mb-12 flex flex-col items-center">
+          <div className="w-full max-w-7xl mx-auto mb-12 flex flex-col items-center justify-center">
             <ContentPlansView graphData={ideas} />
           </div>
         )}
 
-        {/* Footer - center on mobile */}
+        {/* Footer */}
         {ideas && (
-          <div className="w-full max-w-4xl mx-auto text-center mt-12 mb-8 flex flex-col items-center">
+          <div className="w-full max-w-4xl mx-auto text-center mt-12 mb-8 flex flex-col items-center justify-center">
             <button
               onClick={handleCultivateMore}
               className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-medium transition-all duration-200"
